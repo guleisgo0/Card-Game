@@ -1,7 +1,8 @@
 var userStats = {};
 var deck = [[],[],[]];
-var player1Turn = false;
-var moveOn = false;
+var player1Turn = true;
+var canMoveOn = false;
+var numberOfDrawnCards = 0;s
 
 function pageLoad()
 {
@@ -11,32 +12,92 @@ function pageLoad()
 
 function clickEvent()
 {
-  var a = window.getComputedStyle(document.getElementById('player1')).getPropertyValue('border-radius');
-  var b = window.getComputedStyle(document.getElementById('player2')).getPropertyValue('border-radius');
+  var turn = document.getElementById("turn");
   var c = window.getComputedStyle(document.getElementById('deck')).getPropertyValue('border-radius');
-
-  if (a === '26px')
+  if (numberOfDrawnCards ==0)
   {
-
+    turn.innerHTML=(userStats["player0"]["name"]+"'s Turn");
   }
-  if (b === '26px')
+  if(numberOfDrawnCards == 1)
   {
-
+    turn.innerHTML=(userStats["player1"]["name"]+"'s Turn");
   }
-  if (c === '26px')
+  if(numberOfDrawnCards >= 2)
   {
-    if(player1Turn == true)
+    player1hand = userStats["player0"]["currentHand"];
+    player2hand = userStats["player1"]["currentHand"];
+    if(player2hand[0] == player1hand[0])
     {
-      userStats["player0"]["currentHand"] = [Math.floor(Math.random() * 3),Math.floor(Math.random() * 10)];
-      player1Turn = false;
+      if(player1hand[1] > player2hand[1])
+      {
+        userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+      }
+      else
+      {
+          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+      }
     }
     else
     {
-      userStats["player1"]["currentHand"] = [Math.floor(Math.random() * 3),Math.floor(Math.random() * 10)];
-      player1Turn = true;
+      if(player1hand[0] == 0)
+      {
+        if(player2hand[0] == 2)
+        {
+          userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+        }
+        else
+        {
+          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+        }
+      }
+      else if(player1hand[0] == 1)
+      {
+        if(player2hand[0] == 0)
+        {
+          userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+        }
+        else
+        {
+          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+        }
+      }
+      else if(player1hand[0]==2)
+      {
+        if(player2hand[0]==1)
+        {
+          userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+        }
+        else
+        {
+          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+        }
+
+      }
     }
+    userStats["player0"]["currentHand"] = [null,null];
+    userStats["player1"]["currentHand"] = [null,null];
+    updateCards();
+    numberOfDrawnCards = 0;
   }
-  updateCards();
+  else
+  {
+    if (c === '26px')
+    {
+      if(player1Turn == true)
+      {
+        userStats["player0"]["currentHand"] = [Math.floor(Math.random() * 3),Math.floor(Math.random() * 10)];
+        player1Turn = false;
+        numberOfDrawnCards = numberOfDrawnCards + 1;
+      }
+      else
+      {
+        userStats["player1"]["currentHand"] = [Math.floor(Math.random() * 3),Math.floor(Math.random() * 10)];
+        player1Turn = true;
+        numberOfDrawnCards = numberOfDrawnCards + 1;
+      }
+    }
+    updateCards();
+  }
 }
 
 function generateDeck()
@@ -68,7 +129,10 @@ function updateCards()
   playerCurrent = document.getElementById("player1");
   player2Current = document.getElementById("player2");
   deck = document.getElementById("player1");
+  discard1 = document.getElementById("playerdiscard");
+  discard2 = document.getElementById("player2discard");
   var currentEl;
+
   for(var x=0;x!=2;x++)
   {
     if(x==0)
@@ -92,8 +156,14 @@ function updateCards()
     {
       currentEl.style.backgroundColor = "black";
     }
+    if(hand[0]==null)
+    {
+      currentEl.style.backgroundColor = "white";
+    }
     currentEl.innerHTML = hand[1];
   }
+  discard1.innerHTML = userStats["player0"]["score"];
+  discard2.innerHTML = userStats["player1"]["score"];
 }
 
 function initiatePlayers()
@@ -106,6 +176,7 @@ function initiatePlayers()
     userStats["player"+x]["currentHand"] = [null,null];
     userStats["player"+x]["numberOfCards"] = 0;
     userStats["player"+x]["player"] = x+1;
+    userStats["player"+x]["score"] = 0;
   }
 }
 
@@ -119,7 +190,6 @@ function gameStart()
 
 function playGame()
 {
-  var turn = document.getElementById("turn");
   //while(true)
   //{
   //  if(player1Turn)

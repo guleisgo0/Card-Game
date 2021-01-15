@@ -2,6 +2,12 @@ body{
   background-image: url("table.jpg");
 }
 
+#turn
+{
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: 50px;
+  text-shadow: 5px 5px 5px red;
+}
 #player1
 {
   background-color: white;
@@ -27,12 +33,21 @@ body{
   color: white;
 
 }
-
-#player1:hover {
-  animation: shake 1.0s;
-  animation-iteration-count: infinite;
-  border-radius: 26px;
+#playerdiscard
+{
+  background-color: blue;
+  margin: 20px;
+  font-size: 250px;
+  color: white;
 }
+#player2discard
+{
+  background-color: blue;
+  margin: 20px;
+  font-size: 250px;
+  color: white;
+}
+
 
 #deck:hover {
   animation: shake 1.0s;
@@ -40,11 +55,6 @@ body{
   border-radius: 26px;
 }
 
-#player2:hover {
-  animation: shake 1.0s;
-  animation-iteration-count: infinite;
-  border-radius: 26px;
-}
 
 @keyframes shake {
   0% { transform: translate(1px, 1px) rotate(0deg); }
