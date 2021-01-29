@@ -5,7 +5,13 @@ body{
 #turn
 {
   font-family: "Lucida Console", "Courier New", monospace;
-  font-size: 50px;
+  font-size: 25px;
+  text-shadow: 5px 5px 5px red;
+}
+#turn2
+{
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: 25px;
   text-shadow: 5px 5px 5px red;
 }
 #player1

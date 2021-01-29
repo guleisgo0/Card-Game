@@ -2,7 +2,9 @@ var userStats = {};
 var deck = [[],[],[]];
 var player1Turn = true;
 var canMoveOn = false;
-var numberOfDrawnCards = 0;s
+var numberOfDrawnCards = 0;
+var cardNums = [10,10,10];
+var usedCards = [[],[],[]];
 
 function pageLoad()
 {
@@ -14,15 +16,7 @@ function clickEvent()
 {
   var turn = document.getElementById("turn");
   var c = window.getComputedStyle(document.getElementById('deck')).getPropertyValue('border-radius');
-  if (numberOfDrawnCards ==0)
-  {
-    turn.innerHTML=(userStats["player0"]["name"]+"'s Turn");
-  }
-  if(numberOfDrawnCards == 1)
-  {
-    turn.innerHTML=(userStats["player1"]["name"]+"'s Turn");
-  }
-  if(numberOfDrawnCards >= 2)
+  if((numberOfDrawnCards >= 2) && (c==="26px"))
   {
     player1hand = userStats["player0"]["currentHand"];
     player2hand = userStats["player1"]["currentHand"];
@@ -83,21 +77,42 @@ function clickEvent()
   {
     if (c === '26px')
     {
+      random = Math.floor(Math.random() * 3);
+      var other =(Math.floor(Math.random() * (cardNums[random])));
+      while (hasBeenDrawn([random,other]))
+      {
+        random = Math.floor(Math.random() * 3);
+        other =(Math.floor(Math.random() * (cardNums[random])));
+      }
       if(player1Turn == true)
       {
-        userStats["player0"]["currentHand"] = [Math.floor(Math.random() * 3),Math.floor(Math.random() * 10)];
-        player1Turn = false;
-        numberOfDrawnCards = numberOfDrawnCards + 1;
+          userStats["player0"]["currentHand"] = [random,other];
+          usedCards[random].push(other);
+          player1Turn = false;
+          numberOfDrawnCards = numberOfDrawnCards + 1;
       }
-      else
+      else if(player1Turn == false)
       {
-        userStats["player1"]["currentHand"] = [Math.floor(Math.random() * 3),Math.floor(Math.random() * 10)];
+        userStats["player1"]["currentHand"] = [random,other];
+        usedCards[random].push(other);
         player1Turn = true;
         numberOfDrawnCards = numberOfDrawnCards + 1;
       }
     }
     updateCards();
   }
+}
+
+function hasBeenDrawn(list)
+{
+    for(var x=0;x!=usedCards[list[0]].length;x++)
+    {
+      if(usedCards[list[0]][x]== list[1])
+      {
+        return true;
+      }
+    }
+    return false;
 }
 
 function generateDeck()
@@ -174,7 +189,6 @@ function initiatePlayers()
     userStats["player"+x] = {};
     userStats["player"+x]["name"] = window.prompt("What's Player "+(x+1)+"'s Name?");
     userStats["player"+x]["currentHand"] = [null,null];
-    userStats["player"+x]["numberOfCards"] = 0;
     userStats["player"+x]["player"] = x+1;
     userStats["player"+x]["score"] = 0;
   }
@@ -185,6 +199,12 @@ function gameStart()
   initiatePlayers();
   generateDeck();
   shuffleCards(deck);
+  turn = document.getElementById("turn");
+  turn2 = document.getElementById("turn2");
+
+  turn.innerHTML=(userStats["player0"]["name"]+"'s Cards");
+  turn2.innerHTML=(userStats["player1"]["name"]+"'s Cards");
+
   playGame();
 }
 
