@@ -11,11 +11,23 @@
     <div style="margin:0 auto;text-align:center" >
       <div style="text-align:center; display:inline-block;">
         <div><image id= "deck" src="deck.jpg" style="width:200px;height:300px;border:5px solid #000;"></image></div>
+        <div id="buttonz">
+            <button onclick="savePlayerScore()">Save Player Score</button>
+            <button onclick="reset()">Restart</button>
+            <button>Back To Menu</button>
+        </div>
+        <div id="savingOptions">
+            <button id="player1option" onclick="actualSave(userStats['player0']['name'],userStats['player0']['score'])">PLayer 1 Save</button>
+            <button id="player2option" onclick="actualSave(userStats['player1']['name'],userStats['player1']['score'])">Player 2 Save</button>
+            <button id="saveback" onclick="toggleButtons();   savingOptions = document.getElementById('savingOptions');savingOptions.style.display = 'none';">Back</button>
+
+        </div>
         <div id= "playerdiscard" style="width:300px;height:300px;border:5px solid #000;float: left;">0</div>
         <div id= "player1" style="width:200px;height:300px;border:5px solid #000;float: left;">9</div>
+        <div id = "outcome">WINNER</div>
         <div id = "player2discard" style="width:300px;height:300px;border:5px solid #000;float: right;">0</div>
         <div id = "player2" style="width:200px;height:300px;border:5px solid #000;float: right;">9</div>
-        <div style="">
+        <div id = "nameTags">
           <div id="turn"></div>
           <div id="turn2"></div>
         </div>

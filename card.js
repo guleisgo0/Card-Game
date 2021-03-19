@@ -5,73 +5,94 @@ var canMoveOn = false;
 var numberOfDrawnCards = 0;
 var cardNums = [10,10,10];
 var usedCards = [[],[],[]];
+var userAccounts = {};
+var finalcalc = true;
 
 function pageLoad()
 {
   gameStart();
   document.addEventListener('click', clickEvent);
 }
-
-function clickEvent()
+function toggleButtons()
 {
-  var turn = document.getElementById("turn");
-  var c = window.getComputedStyle(document.getElementById('deck')).getPropertyValue('border-radius');
-  if((numberOfDrawnCards >= 2) && (c==="26px"))
+   var buttonz = document.getElementById("buttonz");
+   var nameTags = document.getElementById("nameTags");
+
+  if(buttonz.style.display === "inline")
   {
-    player1hand = userStats["player0"]["currentHand"];
-    player2hand = userStats["player1"]["currentHand"];
-    if(player2hand[0] == player1hand[0])
+    buttonz.style.display = "none";
+    nameTags.style.display="none";
+
+  }
+  else
+  {
+    buttonz.style.display = "inline";
+    nameTags.style.display="block";
+  }
+}
+function actualSave(playerName,score)
+{
+  if((userAccounts.hasOwnProperty(playerName)))
+  {
+    if(window.prompt("Enter the password for "+playerName+":") == userAccounts[playerName]["password"])
     {
-      if(player1hand[1] > player2hand[1])
-      {
-        userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
-      }
-      else
-      {
-          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
-      }
+      userAccounts[playerName]["highscore"] = score;
+      window.alert("Highscore of: "+ score+ " saved successfully too account "+playerName);
     }
     else
     {
-      if(player1hand[0] == 0)
-      {
-        if(player2hand[0] == 2)
-        {
-          userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
-        }
-        else
-        {
-          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
-        }
-      }
-      else if(player1hand[0] == 1)
-      {
-        if(player2hand[0] == 0)
-        {
-          userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
-        }
-        else
-        {
-          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
-        }
-      }
-      else if(player1hand[0]==2)
-      {
-        if(player2hand[0]==1)
-        {
-          userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
-        }
-        else
-        {
-          userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
-        }
-
-      }
+      window.alert("Invalid password");
     }
-    userStats["player0"]["currentHand"] = [null,null];
-    userStats["player1"]["currentHand"] = [null,null];
-    updateCards();
+  }
+  else
+  {
+    userAccounts[playerName] = {};
+    userAccounts[playerName]["password"] = window.prompt("CREATE A PASSWORD");
+    userAccounts[playerName]["highscore"] = score;
+    window.alert("Highscore of: "+ score+ " saved successfully too account "+playerName)
+  }
+  localStorage.setItem('userData',userAccounts);
+}
+function savePlayerScore()
+{
+  toggleButtons();
+  savingOptions = document.getElementById("savingOptions");
+  savingOptions.style.display = "block";
+
+  player1option = document.getElementById("player1option");
+  player2option = document.getElementById("player2option");
+
+  player1option.innerHTML = ("Save "+userStats["player0"]["name"] +"'s Score")
+  player2option.innerHTML = ("Save "+userStats["player1"]["name"] +"'s Score")
+}
+
+function clickEvent()
+{
+  var finished = false;
+  if(usedCards[0].length + usedCards[1].length + usedCards[2].length >= 30)
+  {
+    finished = true;
+  }
+  var turn = document.getElementById("turn");
+  var c = window.getComputedStyle(document.getElementById('deck')).getPropertyValue('border-radius');
+  if(((numberOfDrawnCards >= 2) && (c==="26px")) && (!finished))
+  {
+    player1hand = userStats["player0"]["currentHand"];
+    player2hand = userStats["player1"]["currentHand"];
+
+    determineOutcome(player1hand,player2hand);
     numberOfDrawnCards = 0;
+  }
+  else if(finished)
+  {
+    if(finalcalc == true)
+    {
+      player1hand = userStats["player0"]["currentHand"];
+      player2hand = userStats["player1"]["currentHand"];
+      determineOutcome(player1hand,player2hand);
+      toggleButtons();
+      finalcalc = false;
+    }
   }
   else
   {
@@ -102,7 +123,59 @@ function clickEvent()
     updateCards();
   }
 }
-
+function determineOutcome(player2hand,player1hand)
+{
+  if(player2hand[0] == player1hand[0])
+  {
+    if(player1hand[1] > player2hand[1])
+    {
+      userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+    }
+    else
+    {
+        userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+    }
+  }
+  else
+  {
+    if(player1hand[0] == 0)
+    {
+      if(player2hand[0] == 2)
+      {
+        userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+      }
+      else
+      {
+        userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+      }
+    }
+    else if(player1hand[0] == 1)
+    {
+      if(player2hand[0] == 0)
+      {
+        userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+      }
+      else
+      {
+        userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+      }
+    }
+    else if(player1hand[0]==2)
+    {
+      if(player2hand[0]==1)
+      {
+        userStats["player0"]["score"] = userStats["player0"]["score"] + 2;
+      }
+      else
+      {
+        userStats["player1"]["score"] = userStats["player1"]["score"] + 2;
+      }
+    }
+  }
+  userStats["player0"]["currentHand"] = [null,null];
+  userStats["player1"]["currentHand"] = [null,null];
+  updateCards();
+}
 function hasBeenDrawn(list)
 {
     for(var x=0;x!=usedCards[list[0]].length;x++)
@@ -139,8 +212,21 @@ function shuffleCards(currentDeck)
   }
 }
 
+function reset()
+{
+  toggleButtons();
+  numberOfDrawnCards = 0;
+  finalcalc = true;
+  generateDeck();
+  shuffleCards();
+  usedCards = [[],[],[]];
+  initiatePlayers();
+  updateCards();
+}
+
 function updateCards()
 {
+  if(usedCards)
   playerCurrent = document.getElementById("player1");
   player2Current = document.getElementById("player2");
   deck = document.getElementById("player1");
@@ -175,7 +261,15 @@ function updateCards()
     {
       currentEl.style.backgroundColor = "white";
     }
-    currentEl.innerHTML = hand[1];
+    if(hand[1] == null)
+    {
+      currentEl.style.visibility = "hidden";
+    }
+    else
+    {
+      currentEl.style.visibility = "visible";
+    }
+    currentEl.innerHTML = hand[1]+1;
   }
   discard1.innerHTML = userStats["player0"]["score"];
   discard2.innerHTML = userStats["player1"]["score"];
