@@ -32,6 +32,10 @@ function toggleButtons()
 }
 function actualSave(playerName,score)
 {
+  if(localStorage.getItem('userData')!= null)
+  {
+    userAccounts = JSON.parse(localStorage.getItem('userData'));
+  }
   if((userAccounts.hasOwnProperty(playerName)))
   {
     if(window.prompt("Enter the password for "+playerName+":") == userAccounts[playerName]["password"])
@@ -51,8 +55,9 @@ function actualSave(playerName,score)
     userAccounts[playerName]["highscore"] = score;
     window.alert("Highscore of: "+ score+ " saved successfully too account "+playerName)
   }
-  localStorage.setItem('userData',userAccounts);
+  localStorage.setItem('userData',JSON.stringify(userAccounts));
 }
+
 function savePlayerScore()
 {
   toggleButtons();
