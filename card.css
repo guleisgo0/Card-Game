@@ -9,6 +9,29 @@ body{
   text-shadow: 5px 5px 5px red;
   display: inline;
 }
+
+#menuback:link
+{
+  color: black;
+  text-decoration: none;
+  background-color: #e8e8e8;
+  padding: 2px 5px 2px 5px;
+  border: solid;
+  border-radius: 0.25px;
+  border-color: black;
+
+}
+
+#menuback:visited
+{
+  color: black;
+  text-decoration: none;
+  background-color: #e8e8e8;
+  border: solid;
+  border-radius: 0.25px;
+  border-color: black;
+}
+
 #outcome
 {
   display: none;

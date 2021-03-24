@@ -1,0 +1,43 @@
+#main
+{
+  text-align: center;
+}
+
+#title
+{
+  font-size: 100px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 10px 2px 4px #000000;
+
+
+}
+
+#playButton
+{
+  font-size: 90px;
+  background-color: #66CD00;
+  padding:10px;
+}
+
+#quitButton
+{
+  font-size: 50px;
+  background-color: #EE2C2C;
+  padding:2px;
+}
+
+#options
+{
+  margin: 50px;
+}
+
+body
+{
+  background-image: url("table.jpg");
+}
+
+#leaderboard
+{
+  background-color: white;
+}
